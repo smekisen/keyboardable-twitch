@@ -8,7 +8,6 @@ list = []
 
 def goto_input():
     global selected
-    global list
     result = input('go: ')
     try:
         selected = min(len(list)-1,abs(int(result)))
@@ -17,7 +16,6 @@ def goto_input():
     draw_list(list,selected)
 def hotkey_callback_motion(dir):
     global selected
-    global list
     if dir == 'up':
         selected = max(0,selected - 1)
     elif dir == 'down':
@@ -32,8 +30,6 @@ def refresh_list(helper):
     draw_list(list,selected)
 
 def open_stream():
-    global list
-    global selected
     stream_to_open = list[selected].user_name
 
     args = "\"--mute yes\""
@@ -47,12 +43,8 @@ def draw_list(list,selected):
             marker = ">" if (index == selected) else " "
             print("{}{}. {} - {} - {}".format(marker,index+1,item.user_name,item.game_name,item.viewer_count))
 def main():
-    global selected
-    global list
     helper = twitch_helper()
-    result = helper.get_streams()
-    if result != "0":
-        list = result
+    refresh_list(helper)
     draw_list(list,selected)
     activate_down = partial(hotkey_callback_motion,'down')
     activate_up = partial(hotkey_callback_motion,'up')
